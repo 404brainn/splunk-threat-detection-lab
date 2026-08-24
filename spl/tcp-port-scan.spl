@@ -1,0 +1,9 @@
+index=main sourcetype=pfirewall
+| rex field=_raw "(?<action>ALLOW|DROP)\s+(?<protocol>\S+)\s+(?<src_ip>\S+)\s+(?<dest_ip>\S+)\s+(?<src_port>\d+|-)\s+(?<dest_port>\d+|-)"
+| search protocol=TCP
+| stats dc(dest_port) AS unique_ports values(dest_port) AS scanned_ports count AS total_connections by src_ip
+| where unique_ports >= 3
+| rename src_ip AS "Source IP"
+| rename unique_ports AS "Unique Ports Scanned"
+| rename scanned_ports AS "Ports"
+| rename total_connections AS "Connection Attempts"
