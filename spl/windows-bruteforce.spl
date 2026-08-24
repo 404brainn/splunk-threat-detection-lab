@@ -1,0 +1,5 @@
+index=* EventCode=4625
+| eval Source_IP=coalesce(Source_Network_Address, SourceIp, IpAddress)
+| stats count AS failed_attempts values(Account_Name) AS targeted_accounts by Source_IP
+| where failed_attempts >= 5
+| sort - failed_attempts
