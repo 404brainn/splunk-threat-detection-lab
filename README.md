@@ -17,6 +17,8 @@ Windows Security Logs, Sysmon telemetry, and Windows Firewall logs are forwarded
 
 ## Lab Architecture
 
+![Splunk Lab Architecture](architecture/splunk-lab-architecture.svg)
+
 ```text
 Kali Linux
    |
@@ -63,18 +65,30 @@ Dashboard
 Analyst Investigation
 ```
 
-## Repository Structure
+## Dashboard Evidence
 
-```text
-.
-├── architecture/
-├── dashboards/
-├── detections/
-├── reports/
-├── screenshots/
-├── spl/
-└── README.md
-```
+### SOC Executive Dashboard
+![SOC Executive Dashboard](screenshots/soc-executive-dashboard.png)
+
+### Endpoint Detection Dashboard
+![Endpoint Detection Dashboard](screenshots/endpoint-detection-dashboard.png)
+
+### Authentication & Network Security Dashboard
+![Authentication & Network Security](screenshots/authentication-network-security.png)
+
+## Detection Evidence
+
+| Detection | Evidence |
+|---|---|
+| PowerShell Execution | [Screenshot](screenshots/powershell-execution.png) · [SPL](spl/powershell-execution.spl) |
+| Encoded PowerShell | [Screenshot](screenshots/encoded-powershell.png) · [SPL](spl/encoded-powershell.spl) |
+| Suspicious Parent–Child Process | [Screenshot](screenshots/parent-child-process.png) · [SPL](spl/parent-child-process.spl) |
+| Windows Brute Force | [Screenshot](screenshots/windows-bruteforce.png) · [SPL](spl/windows-bruteforce.spl) |
+| TCP Port Scan | [Screenshot](screenshots/tcp-port-scan.png) · [SPL](spl/tcp-port-scan.spl) |
+
+## Alerts
+
+The project includes five detection use cases configured as Splunk searches/alerts. Evidence of the configured detections is available in [configured-alerts.png](screenshots/configured-alerts.png).
 
 ## Key SPL Skills Demonstrated
 
@@ -100,13 +114,31 @@ EventCode=1
 
 This identifies Sysmon Process Creation events involving PowerShell and presents the time, host, user, executable, and command line for investigation.
 
-## Security Disclaimer
+## Wazuh vs Splunk
 
-All attack simulations were performed in an isolated laboratory environment against systems controlled for security testing and learning purposes.
+A short qualitative comparison is documented in [comparison/wazuh-vs-splunk.md](comparison/wazuh-vs-splunk.md). The comparison focuses on query flexibility, dashboarding, detection workflow, and analyst investigation rather than unsupported performance claims.
 
 ## Project Report
 
-The complete laboratory report will be added under `reports/`.
+[Download/View the complete laboratory report](reports/Splunk-Threat-Detection-Incident-Response-Report.pdf)
+
+## Repository Structure
+
+```text
+.
+├── architecture/
+├── comparison/
+├── dashboards/
+├── detections/
+├── reports/
+├── screenshots/
+├── spl/
+└── README.md
+```
+
+## Security Disclaimer
+
+All attack simulations were performed in an isolated laboratory environment against systems controlled for security testing and learning purposes.
 
 ## Author
 
