@@ -1,28 +1,35 @@
 # Threat Detection & Incident Response Using Splunk Enterprise
 
-A hands-on Security Operations Center (SOC) laboratory focused on Splunk-based detection engineering, SPL analysis, security alerting, dashboards, and MITRE ATT&CK mapping.
+A hands-on Security Operations Center (SOC) laboratory focused on Splunk detection engineering, SPL development, security alerting, dashboarding, investigation, and MITRE ATT&CK mapping.
 
-## Project Overview
+## What this project demonstrates
 
-This laboratory uses:
+- Centralized Windows telemetry collection
+- Practical SPL query development
+- Detection engineering and alert configuration
+- Investigation-oriented dashboards
+- Process and authentication analysis
+- Network activity detection
+- Evidence-driven documentation
 
-- Splunk Enterprise
-- Ubuntu Server 24.04.4 LTS
-- Windows 11 Pro
-- Microsoft Sysmon
-- Splunk Universal Forwarder
-- Kali Linux
+## Lab Environment
 
-Windows Security Logs, Sysmon telemetry, and Windows Firewall logs are forwarded to Splunk for centralized analysis. Custom SPL detections are then used to identify suspicious activity, generate alerts, and support analyst investigation.
+- **Splunk Enterprise** — Ubuntu Server 24.04.4 LTS
+- **Windows 11 Pro** — monitored endpoint
+- **Microsoft Sysmon** — process and endpoint telemetry
+- **Splunk Universal Forwarder** — log forwarding
+- **Kali Linux** — controlled attack simulation
 
-## Lab Architecture
+Windows Security Logs, Sysmon telemetry, and Windows Firewall logs are forwarded to Splunk for centralized analysis.
+
+## Architecture
 
 ![Splunk Lab Architecture](architecture/splunk-lab-architecture.svg)
 
 ```text
 Kali Linux
    |
-   | Attack simulation
+   | Controlled attack simulation
    v
 Windows 11 + Sysmon
    |
@@ -39,13 +46,15 @@ Splunk Enterprise on Ubuntu
 
 ## Detection Use Cases
 
-| # | Detection | ATT&CK |
+| # | Detection | Primary ATT&CK mapping |
 |---|---|---|
-| 1 | PowerShell Execution | T1059.001 |
-| 2 | Encoded PowerShell | T1059.001 |
-| 3 | Suspicious Parent–Child Process | T1204 |
-| 4 | Windows Authentication Brute Force | T1110 |
-| 5 | TCP Port Scan | T1046 |
+| 1 | PowerShell Execution | T1059.001 — PowerShell |
+| 2 | Encoded PowerShell | T1059.001 — PowerShell |
+| 3 | Suspicious Parent–Child Process | T1059.001 / T1059.003 — PowerShell / Windows Command Shell |
+| 4 | Windows Authentication Brute Force | T1110 — Brute Force |
+| 5 | TCP Port Scan | T1046 — Network Service Scanning |
+
+> ATT&CK mappings describe the behavior represented by the telemetry; they are not intended to imply that every matching event is malicious.
 
 ## Detection Engineering Workflow
 
@@ -54,59 +63,74 @@ Attack Simulation
       ↓
 Log Collection
       ↓
-SPL Query
+SPL Query Development
       ↓
 Detection Validation
       ↓
-Alert
+Alert Configuration
       ↓
-Dashboard
+Dashboard / Investigation
       ↓
-Analyst Investigation
+Analyst Interpretation
 ```
-
-## Dashboard Evidence
-
-### SOC Executive Dashboard
-![SOC Executive Dashboard](screenshots/soc-executive-dashboard.png)
-
-### Endpoint Detection Dashboard
-![Endpoint Detection Dashboard](screenshots/endpoint-detection-dashboard.png)
-
-### Authentication & Network Security Dashboard
-![Authentication & Network Security](screenshots/authentication-network-security.png)
 
 ## Detection Evidence
 
 | Detection | Evidence |
 |---|---|
-| PowerShell Execution | [Screenshot](screenshots/powershell-execution.png) · [SPL](spl/powershell-execution.spl) |
-| Encoded PowerShell | [Screenshot](screenshots/encoded-powershell.png) · [SPL](spl/encoded-powershell.spl) |
-| Suspicious Parent–Child Process | [Screenshot](screenshots/parent-child-process.png) · [SPL](spl/parent-child-process.spl) |
-| Windows Brute Force | [Screenshot](screenshots/windows-bruteforce.png) · [SPL](spl/windows-bruteforce.spl) |
-| TCP Port Scan | [Screenshot](screenshots/tcp-port-scan.png) · [SPL](spl/tcp-port-scan.spl) |
+| PowerShell Execution | [Screenshot](screenshots/powershell-execution.png) · [SPL](spl/powershell-execution.spl) · [Detection notes](detections/powershell-execution.md) |
+| Encoded PowerShell | [Screenshot](screenshots/encoded-powershell.png) · [SPL](spl/encoded-powershell.spl) · [Detection notes](detections/encoded-powershell.md) |
+| Suspicious Parent–Child Process | [Screenshot](screenshots/parent-child-process.png) · [SPL](spl/parent-child-process.spl) · [Detection notes](detections/parent-child-process.md) |
+| Windows Brute Force | [Screenshot](screenshots/windows-bruteforce.png) · [SPL](spl/windows-bruteforce.spl) · [Detection notes](detections/windows-bruteforce.md) |
+| TCP Port Scan | [Screenshot](screenshots/tcp-port-scan.png) · [SPL](spl/tcp-port-scan.spl) · [Detection notes](detections/tcp-port-scan.md) |
 
-## Alerts
+## Alerting
 
-The project includes five detection use cases configured as Splunk searches/alerts. Evidence of the configured detections is available in [configured-alerts.png](screenshots/configured-alerts.png).
+The lab contains configured Splunk searches/alerts for the documented detection use cases. Evidence is available in [configured-alerts.png](screenshots/configured-alerts.png).
+
+## False-Positive and Tuning Considerations
+
+A production detection should not treat every match as malicious. Examples of tuning considerations used for this lab include:
+
+- **PowerShell:** distinguish normal administrative activity from unusual command-line usage, encoded commands, or suspicious parent processes.
+- **Brute force:** establish a baseline for normal authentication failures and consider source, target account, host criticality, and time window.
+- **Port scanning:** account for legitimate vulnerability scanners, monitoring systems, and administrative discovery activity.
+- **Parent-child processes:** treat unusual process relationships as investigation signals rather than automatic proof of compromise.
+
+The thresholds in this laboratory are demonstration values and should be tuned against production baselines before deployment.
 
 ## Key SPL Skills Demonstrated
 
-- Sysmon event filtering
-- Field extraction with `rex`
+- Sysmon Event ID 1 filtering
+- Windows Event ID 4625 analysis
+- Firewall-log parsing with `rex`
+- Field extraction
 - Conditional filtering with `where`
 - Aggregation with `stats`
-- Event correlation and investigation
+- Distinct-count analysis
 - Search-driven alert creation
-- Security dashboard development
+- Investigation dashboards
+- Detection documentation
 
 ## Interview-Ready Use Case
 
 **Windows brute-force detection:** Built an SPL search for Windows Event ID 4625 that normalizes the source IP, aggregates failed attempts and targeted accounts by source IP, and flags sources with at least five failed attempts.
 
-This is a concrete example of detection engineering: **log source → field normalization → aggregation → threshold → analyst-facing result → alert/dashboard evidence.**
+The important engineering steps are:
 
-## Example Detection
+**log source → field normalization → aggregation → threshold → validation → alert/dashboard evidence**
+
+### Example SPL
+
+```spl
+index=* EventCode=4625
+| eval Source_IP=coalesce(Source_Network_Address,SourceIP,IpAddress)
+| stats count AS failed_attempts values(Account_Name) AS targeted_accounts by Source_IP
+| where failed_attempts >= 5
+| sort - failed_attempts
+```
+
+## Example: PowerShell Investigation
 
 ```spl
 source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
@@ -118,11 +142,11 @@ EventCode=1
 | sort -_time
 ```
 
-This identifies Sysmon Process Creation events involving PowerShell and presents the time, host, user, executable, and command line for investigation.
+This extracts the executable and command line from Sysmon Process Creation events so an analyst can investigate the execution context.
 
 ## Wazuh vs Splunk
 
-A short qualitative comparison is documented in [comparison/wazuh-vs-splunk.md](comparison/wazuh-vs-splunk.md). The comparison focuses on query flexibility, dashboarding, detection workflow, and analyst investigation rather than unsupported performance claims.
+A separate qualitative comparison is documented in [comparison/wazuh-vs-splunk.md](comparison/wazuh-vs-splunk.md). It focuses on workflow, query flexibility, dashboarding, alerting, and investigation experience rather than unsupported benchmark claims.
 
 ## Project Report
 
@@ -144,7 +168,7 @@ A short qualitative comparison is documented in [comparison/wazuh-vs-splunk.md](
 
 ## Security Disclaimer
 
-All attack simulations were performed in an isolated laboratory environment against systems controlled for security testing and learning purposes.
+All attack simulations were performed in an isolated laboratory environment against systems controlled for security testing and learning purposes. Do not reproduce testing against systems without authorization.
 
 ## Author
 
