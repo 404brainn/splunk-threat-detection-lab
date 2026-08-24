@@ -1,0 +1,7 @@
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+EventCode=1
+| rex field=_raw "<Data Name='Image'>(?<Image>[^<]+)</Data>"
+| rex field=_raw "<Data Name='CommandLine'>(?<CommandLine>[^<]*)</Data>"
+| search Image="*powershell.exe"
+| table _time Computer User Image CommandLine
+| sort -_time
