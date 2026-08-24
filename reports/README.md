@@ -1,7 +1,7 @@
 # Project Report
 
-Place the final project report PDF here as:
+The complete laboratory report is available here:
 
-`Splunk-Threat-Detection-Incident-Response-Report.pdf`
+[Splunk Threat Detection & Incident Response Report](Splunk-Threat-Detection-Incident-Response-Report.pdf)
 
-The report should document the objective, configuration, attack simulations, SPL queries, detection results, alert configuration, dashboards, MITRE ATT&CK mapping, testing, troubleshooting, and conclusion.
+The report documents the lab objective, architecture, configuration, attack simulations, SPL detections, alerting, dashboards, MITRE ATT&CK mapping, validation results, and impact.
