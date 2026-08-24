@@ -100,6 +100,12 @@ The project includes five detection use cases configured as Splunk searches/aler
 - Search-driven alert creation
 - Security dashboard development
 
+## Interview-Ready Use Case
+
+**Windows brute-force detection:** Built an SPL search for Windows Event ID 4625 that normalizes the source IP, aggregates failed attempts and targeted accounts by source IP, and flags sources with at least five failed attempts.
+
+This is a concrete example of detection engineering: **log source → field normalization → aggregation → threshold → analyst-facing result → alert/dashboard evidence.**
+
 ## Example Detection
 
 ```spl
@@ -120,7 +126,7 @@ A short qualitative comparison is documented in [comparison/wazuh-vs-splunk.md](
 
 ## Project Report
 
-[Download/View the complete laboratory report](reports/Splunk-Threat-Detection-Incident-Response-Report.pdf)
+[View the complete laboratory report](reports/Splunk-Threat-Detection-Incident-Response-Report.pdf)
 
 ## Repository Structure
 
