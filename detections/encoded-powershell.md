@@ -1,12 +1,14 @@
 # Encoded PowerShell Detection
 
-## Objective
-Identify PowerShell processes launched with `-EncodedCommand` or `-enc` parameters.
+## What I Checked
+
+This search looks for PowerShell started with `-EncodedCommand` or `-enc`. I used Sysmon process creation events as the data source.
 
 ## MITRE ATT&CK
+
 - Technique: T1059.001
 - Tactic: Execution
-- Data Source: Sysmon
+- Data source: Sysmon
 
 ## SPL
 
@@ -21,8 +23,13 @@ EventCode=1
 | sort -_time
 ```
 
-## Analyst Notes
-- Review the encoded command.
-- Decode the Base64 string if necessary.
-- Investigate the parent process.
-- Check for subsequent network activity.
+The search filters PowerShell process events and checks the command line for the encoded-command switches.
+
+## What I Would Check Next
+
+- Review the full command line.
+- Decode the Base64 value when needed to understand what was executed.
+- Check which process started PowerShell.
+- Look for related network or process activity.
+
+Using an encoded command is not enough by itself to prove malicious activity, but it is useful for finding executions that need a closer look.
