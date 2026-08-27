@@ -1,21 +1,21 @@
-# TCP Port Scan Detection
+# TCP Port-Scan Detection
 
-## Objective
+## What I Checked
 
-Identify TCP port scanning activity by analyzing Windows Firewall logs. The laboratory uses Nmap from Kali Linux to simulate reconnaissance against the Windows endpoint.
+I used Windows Firewall logs to look for a source connecting to multiple TCP destination ports. Kali Linux was used to run the controlled Nmap scan against the Windows endpoint.
 
-## Attack Simulation
+## Test Activity
 
-An Nmap TCP scan was executed from Kali Linux against the Windows endpoint. Windows Firewall recorded incoming connection attempts in `pfirewall.log`, which were forwarded by the Splunk Universal Forwarder to Splunk Enterprise.
+Windows Firewall recorded the connection attempts in `pfirewall.log`. The Splunk Universal Forwarder collected the log and sent it to Splunk Enterprise for analysis.
 
 ## MITRE ATT&CK
 
 - Technique: T1046
 - Name: Network Service Discovery
 - Tactic: Discovery
-- Data Source: Windows Firewall Log
+- Data source: Windows Firewall Log
 
-## SPL Detection
+## SPL
 
 ```spl
 index=main sourcetype=pfirewall
@@ -29,32 +29,17 @@ index=main sourcetype=pfirewall
 | rename total_connections AS "Connection Attempts"
 ```
 
-## Query Explanation
-
-The query extracts network fields from the Windows Firewall log using regular expressions. It filters TCP traffic, counts unique destination ports contacted by each source IP, and identifies sources exceeding the configured threshold of three unique ports.
+The search extracts the firewall fields, filters for TCP traffic, and counts the number of different destination ports contacted by each source IP. In this lab, the threshold was set to three unique ports.
 
 ## Alert
 
-- Alert Name: Network Reconnaissance Detection
-- Search Type: Scheduled
-- Trigger Condition: Number of Results > 0
+- Alert name: Network Reconnaissance Detection
+- Search type: Scheduled
+- Trigger: Number of results greater than 0
 - Severity: Medium
 
-## Expected Output
+## What I Would Check Next
 
-- Source IP
-- Number of Unique Ports Scanned
-- List of Scanned Ports
-- Total Connection Attempts
+If this alert appeared in a real environment, I would first check whether the source belongs to an approved scanner or monitoring system. I would then review the ports, look for follow-up activity, and correlate the result with authentication and endpoint events.
 
-## Analyst Investigation
-
-1. Determine whether the source IP belongs to an approved vulnerability scanner.
-2. Review the scanned ports.
-3. Check for subsequent exploitation attempts.
-4. Correlate with authentication and Sysmon events.
-5. Monitor or block the source host if the activity is unauthorized.
-
-## Evidence
-
-Add the Splunk query and result screenshot to `screenshots/tcp-port-scan.png` once available.
+The threshold is only a lab value and would need tuning for a production network.
