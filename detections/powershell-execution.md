@@ -1,12 +1,14 @@
 # PowerShell Execution Detection
 
-## Objective
-Identify PowerShell execution on the monitored Windows endpoint using Sysmon Process Creation events.
+## What I Checked
+
+I used Sysmon Process Creation events to find PowerShell executions on the Windows endpoint.
 
 ## MITRE ATT&CK
+
 - Technique: T1059.001
 - Name: PowerShell
-- Data Source: Sysmon
+- Data source: Sysmon
 - Event: EventCode 1
 
 ## SPL
@@ -21,8 +23,13 @@ EventCode=1
 | sort -_time
 ```
 
-## Analyst Notes
-- Verify the executing user.
-- Review the complete command line.
-- Determine whether the execution is expected.
-- Correlate with other endpoint events.
+The search extracts the executable path and command line from the Sysmon event, then shows the user, computer, and time of execution.
+
+## What I Would Check Next
+
+- Who started PowerShell?
+- What was in the command line?
+- Was the activity expected on that machine?
+- Are there other related Sysmon or Windows events around the same time?
+
+PowerShell activity is not automatically malicious, so the event needs to be reviewed in context.
