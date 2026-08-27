@@ -1,32 +1,25 @@
 # Splunk Dashboards
 
-The laboratory includes three analyst-facing dashboard views built in Splunk Enterprise.
+I created three dashboards to make the lab results easier to review.
 
 ## 1. SOC Executive Dashboard
 
-High-level view of endpoint, authentication, and network detections.
+A high-level view of endpoint, authentication, and network activity.
 
 ![SOC Executive Dashboard](../screenshots/soc-executive-dashboard.png)
 
 ## 2. Endpoint Detection Dashboard
 
-Focuses on process execution, PowerShell activity, encoded PowerShell, and suspicious process relationships.
+This view focuses on Sysmon process events, PowerShell activity, encoded PowerShell, and the parent-child process test.
 
 ![Endpoint Detection Dashboard](../screenshots/endpoint-detection-dashboard.png)
 
 ## 3. Authentication & Network Security Dashboard
 
-Focuses on failed/successful authentication activity, network connections, and port-scan observations.
+This dashboard brings together failed and successful logons, network activity, and the port-scan results.
 
 ![Authentication & Network Security](../screenshots/authentication-network-security.png)
 
-## Dashboard Inventory Evidence
+The list of dashboards is also captured in [dashboards-list.png](../screenshots/dashboards-list.png).
 
-The Splunk dashboard inventory is captured in [dashboards-list.png](../screenshots/dashboards-list.png).
-
-## Design Notes
-
-- Dashboards are intended for SOC triage and investigation.
-- Detection panels are backed by SPL searches.
-- Visual evidence is stored separately under `screenshots/`.
-- No credentials, API keys, or tokens are stored in this repository.
+The dashboard panels are based on SPL searches from this lab. The screenshots are kept separately under `screenshots/` as evidence of the results I captured during testing.
