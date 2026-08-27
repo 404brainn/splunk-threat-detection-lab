@@ -1,20 +1,20 @@
-# Suspicious Parent–Child Process Detection
+# Suspicious Parent-Child Process Detection
 
-## Objective
+## What I Checked
 
-Identify suspicious Windows process relationships, such as `cmd.exe` spawning `powershell.exe`, using Sysmon Process Creation telemetry.
+I used Sysmon Process Creation events to look at how Windows processes started each other. One of the test cases was `cmd.exe` launching `powershell.exe`.
 
-## Attack Simulation
+## Test Activity
 
-The Windows Command Prompt was used to launch PowerShell, generating Sysmon Process Creation events containing parent and child process information.
+I started PowerShell from the Windows Command Prompt. Sysmon recorded both the parent and child process details, which were then available in Splunk.
 
 ## MITRE ATT&CK
 
 - Technique: T1204
 - Name: User Execution
-- Data Source: Sysmon
+- Data source: Sysmon
 
-## SPL Detection
+## SPL
 
 ```spl
 source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
@@ -33,23 +33,18 @@ EventCode=1
 | sort -_time
 ```
 
-## Query Explanation
-
-The search extracts the parent process, child process, and command-line arguments from Sysmon Process Creation events. It then filters for the suspicious parent–child relationships documented in the laboratory report.
+The search extracts the parent process, child process, and command line from the Sysmon event and filters for the relationships used in the test.
 
 ## Alert
 
-- Alert Name: Suspicious Parent–Child Process Detection
+- Alert name: Suspicious Parent-Child Process Detection
 - Severity: High
 
-## Analyst Investigation
+## What I Would Check Next
 
-1. Verify the parent process.
-2. Review the child process.
-3. Examine the command line.
-4. Correlate with authentication events.
-5. Check for related network connections.
+- Review the parent and child process.
+- Check the command line.
+- See whether the activity makes sense for the user and host.
+- Look for related authentication or network activity.
 
-## Evidence
-
-Add the Splunk query and result screenshot to `screenshots/parent-child-process.png` once available.
+A process relationship can be unusual without being malicious, so I would use this detection as a starting point for investigation rather than treating every match as a confirmed compromise.
