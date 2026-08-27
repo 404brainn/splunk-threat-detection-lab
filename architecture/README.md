@@ -1,33 +1,30 @@
 # Lab Architecture
 
-## Components
+The lab has three main systems:
 
-- Splunk Enterprise on Ubuntu Server 24.04.4 LTS
-- Windows 11 Pro endpoint
-- Microsoft Sysmon v15.21
-- Splunk Universal Forwarder
-- Kali Linux attack simulation host
-- Windows Security, Sysmon, Application, System, and Firewall logs
+- **Ubuntu Server 24.04.4 LTS** - runs Splunk Enterprise.
+- **Windows 11 Pro** - the monitored endpoint, with Sysmon and the Splunk Universal Forwarder.
+- **Kali Linux** - used to generate controlled test activity.
+
+The Windows machine sends Security, Application, System, Sysmon, and Firewall events to Splunk through the Universal Forwarder.
 
 ## Data Flow
 
 ```text
 Kali Linux
     |
-    | Attack simulation
+    | Controlled testing
     v
-Windows 11 Pro + Sysmon + Windows Firewall
+Windows 11 + Sysmon + Windows Firewall
     |
     | Splunk Universal Forwarder
     v
 Splunk Enterprise
     |
-    +--> SPL detections
+    +--> SPL searches
     +--> Scheduled alerts
     +--> Dashboards
-    +--> Analyst investigation
+    +--> Investigation
 ```
 
-## Purpose
-
-The architecture provides centralized security telemetry for custom SPL-based detection engineering and controlled validation of five attack scenarios.
+Kali generates the test activity, but the Windows endpoint is the main source of telemetry for the detections. Splunk receives the logs and I use SPL searches to find the activity, test the results, and build alerts and dashboards around it.
