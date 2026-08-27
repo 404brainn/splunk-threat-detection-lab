@@ -1,13 +1,15 @@
-# Windows Authentication Brute Force Detection
+# Windows Authentication Brute-Force Detection
 
-## Objective
-Identify repeated failed Windows logon attempts originating from the same source IP.
+## What I Checked
+
+I used Windows failed-logon events to look for repeated authentication attempts from the same source IP. The lab search uses EventCode 4625 and flags a source after five failed attempts.
 
 ## MITRE ATT&CK
+
 - Technique: T1110
-- Technique Name: Brute Force
+- Name: Brute Force
 - Tactic: Credential Access
-- Log Source: Windows Security Log
+- Data source: Windows Security Log
 
 ## SPL
 
@@ -19,11 +21,15 @@ index=* EventCode=4625
 | sort - failed_attempts
 ```
 
+The `coalesce()` step handles different field names that may contain the source address. The search then groups events by source IP and counts the failures.
+
 ## Alert
+
 - Name: Windows Authentication Brute Force Detection
-- Search Type: Scheduled
-- Trigger: Number of Results > 0
+- Search type: Scheduled
+- Trigger: Number of results greater than 0
 - Severity: High
 
-## Analyst Investigation
-Review the source IP, number of failed attempts, targeted accounts, and event timestamps before determining whether the activity is malicious.
+## What I Would Check Next
+
+Before deciding that the activity is malicious, I would review the source IP, number of failures, targeted accounts, timestamps, and any successful logons that happened afterward.
